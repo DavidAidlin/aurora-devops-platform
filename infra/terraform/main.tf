@@ -51,7 +51,7 @@ resource "aws_security_group" "aurora_sg" {
 resource "aws_instance" "aurora_test_env" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
-  subnet_id              = data.aws_subnet_ids.default.ids[0]
+  subnet_id              = data.aws_subnets.default.ids[0]
   security_groups        = [aws_security_group.aurora_sg.id]
   key_name               = var.instance_key_name
 
