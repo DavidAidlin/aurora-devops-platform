@@ -70,7 +70,7 @@ This installs Terraform from HashiCorp’s official repository, ensuring correct
 
 I verified it with:
 
-terraform version
+`terraform version`
 
 ## 4. Installing AWS CLI v2
 
@@ -101,11 +101,8 @@ aws configure
 I entered:
 
 My Access Key ID
-
 My Secret Access Key
-
 Region: eu-central-1
-
 Output: json
 
 I confirmed it worked:
@@ -126,7 +123,6 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/aurora_key
 This produced:
 
 ~/.ssh/aurora_key (private key)
-
 ~/.ssh/aurora_key.pub (public key)
 
 Why:
@@ -148,17 +144,12 @@ aws ec2 describe-key-pairs --key-name aurora-key
 
 Inside infra/terraform/ I created Terraform files:
 
-versions.tf
-
-provider.tf
-
-variables.tf
-
-data.tf
-
-main.tf
-
-outputs.tf
+-versions.tf
+-provider.tf
+-variables.tf
+-data.tf
+-main.tf
+-outputs.tf
 
 Why:
 These files define everything required to create the environment: default VPC lookup, subnets, Ubuntu AMI, security group, S3 bucket, random ID, and an EC2 instance.
