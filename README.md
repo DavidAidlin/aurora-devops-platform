@@ -1,4 +1,4 @@
-#Aurora DevOps Platform
+# Aurora DevOps Platform
 
 This project is my personal end-to-end DevOps platform.
 My goal is to build a realistic, professional system that demonstrates how a CI/CD pipeline can create temporary cloud environments, configure them automatically, deploy applications, run checks, collect logs, and destroy everything when the job is done.
@@ -6,7 +6,7 @@ My goal is to build a realistic, professional system that demonstrates how a CI/
 Below is the full chronological log of everything I did so far, including the commands I ran and the purpose behind each action.
 
 Project Setup Log (What I did and why)
-1. Creating the project structure
+## 1. Creating the project structure
 
 I created the following folder layout:
 ```
@@ -24,7 +24,7 @@ aurora-devops-platform/
 Why I did this:
 I wanted the repository to look like a real internal DevOps platform. Separating app code, infrastructure code, CI logic, tests, and tools makes the project readable and scalable.
 
-2. Initializing Git and creating the GitHub repository
+## 2. Initializing Git and creating the GitHub repository
 
 Commands I ran:
 ```
@@ -46,7 +46,7 @@ git push -u origin main
 Why:
 I wanted the project to be visible publicly and backed up online. This also makes it LinkedIn-ready.
 
-3. Installing Terraform the correct way
+## 3. Installing Terraform the correct way
 
 I intentionally avoided the snap version because it is sometimes outdated or broken.
 
@@ -72,7 +72,7 @@ I verified it with:
 
 terraform version
 
-4. Installing AWS CLI v2
+## 4. Installing AWS CLI v2
 
 I downloaded and installed the AWS CLI manually:
 ```
@@ -85,7 +85,7 @@ aws --version
 Why:
 I needed the AWS CLI to authenticate Terraform against AWS and manage resources like EC2, S3, and IAM.
 
-5. Creating an AWS access key
+## 5. Creating an AWS access key
 
 From the AWS Console → IAM → Users → My user → Security Credentials, I created a new access key specifically for CLI usage.
 
@@ -116,7 +116,7 @@ aws sts get-caller-identity
 Why:
 This proves the CLI is authenticated and has permission to create resources.
 
-6. Creating an SSH key pair for EC2 access
+## 6. Creating an SSH key pair for EC2 access
 
 Locally I generated a key:
 ```
@@ -144,7 +144,7 @@ I verified it:
 ```
 aws ec2 describe-key-pairs --key-name aurora-key
 ```
-7. Writing Terraform configuration
+## 7. Writing Terraform configuration
 
 Inside infra/terraform/ I created Terraform files:
 
@@ -187,4 +187,3 @@ After correcting file names and updating deprecated data sources, Terraform prod
 1 random suffix ID
 
 This confirms the infrastructure definition is correct.
-f
