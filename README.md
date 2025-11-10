@@ -100,10 +100,10 @@ aws configure
 
 I entered:
 
-My Access Key ID
-My Secret Access Key
-Region: eu-central-1
-Output: json
+My Access Key ID  
+My Secret Access Key  
+Region: eu-central-1  
+Output: json  
 
 I confirmed it worked:
 ```
@@ -122,8 +122,8 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/aurora_key
 
 This produced:
 
-~/.ssh/aurora_key (private key)
-~/.ssh/aurora_key.pub (public key)
+~/.ssh/aurora_key (private key)  
+~/.ssh/aurora_key.pub (public key)  
 
 Why:
 Terraform needs a public key to associate with the EC2 instance so I can SSH into it.
@@ -144,12 +144,12 @@ aws ec2 describe-key-pairs --key-name aurora-key
 
 Inside infra/terraform/ I created Terraform files:
 
--versions.tf
--provider.tf
--variables.tf
--data.tf
--main.tf
--outputs.tf
+-versions.tf  
+-provider.tf  
+-variables.tf  
+-data.tf  
+-main.tf  
+-outputs.tf  
 
 Why:
 These files define everything required to create the environment: default VPC lookup, subnets, Ubuntu AMI, security group, S3 bucket, random ID, and an EC2 instance.
@@ -169,12 +169,9 @@ terraform plan -var "instance_key_name=aurora-key"
 
 After correcting file names and updating deprecated data sources, Terraform produced a valid plan showing:
 
-1 EC2 instance to be created
-
-1 S3 bucket
-
-1 security group
-
-1 random suffix ID
++ 1 EC2 instance to be created  
++ 1 S3 bucket  
++ 1 security group  
++ 1 random suffix ID  
 
 This confirms the infrastructure definition is correct.
