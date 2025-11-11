@@ -175,3 +175,73 @@ After correcting file names and updating deprecated data sources, Terraform prod
 + 1 random suffix ID  
 
 This confirms the infrastructure definition is correct.
+
+## 8. Connecting to the EC2 instance with the SSH key
+
+Using the public IP from Terraform, I connected:
+
+`ssh -i ~/.ssh/aurora_key ubuntu@<public_ip>`
+
+
+Why:
+I tested that my key works and that the instance actually exists and is reachable.
+This verifies that both Terraform and the AWS network setup (VPC + SG) are correct.
+
+
+## 9. Installing Ansible (locally on my DevOps workstation)
+
+Before provisioning the machine, I needed Ansible installed:
+```
+sudo apt update
+sudo apt install ansible-core -y
+ansible --version
+```
+
+Why:
+Ansible will remotely configure the EC2 instance.
+Terraform handles “create”, Ansible handles “configure”.
+
+## 10. Creating the Ansible inventory and playbook
+
+Inside infra/ansible/ I created:
+
+inventory.ini  
+deploy.yaml  
+
+
+Contents of inventory.ini:
+```ini
+[webserver]
+<public_ip> ansible_ssh_private_key_file=~/.ssh/aurora_key ansible_user=ubuntu
+```
+
+Why:
+Ansible needs to know which host to manage, which SSH user it should use (ubuntu), and which key file to use.
+
+Then I wrote deploy.yaml with tasks:
+
+-Update apt cache  
+-Upgrade installed packages  
+-Install Nginx  
+-Ensure Nginx is running  
+-Deploy a custom /var/www/html/index.html file  
+
+Why:
+This simulates a standard provisioning flow:
+OS updates → package installation → service enablement → app deployment.
+
+
+## 11. Running the Ansible playbook
+
+I executed:
+
+`ansible-playbook -i inventory.ini deploy.yaml`
+
+
+Ansible printed:
+
+`ok=6  changed=4  failed=0`
+
+
+Why:
+This confirmed the machine was successfully configured: Nginx installed, enabled, and serving my custom HTML page.
