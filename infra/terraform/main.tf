@@ -22,6 +22,14 @@ resource "aws_security_group" "aurora_sg" {
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
+    description = "Allow HTTP (Nginx)"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "Allow app traffic"
     from_port   = var.app_port
     to_port     = var.app_port
@@ -36,6 +44,7 @@ resource "aws_security_group" "aurora_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 
   egress {
     from_port   = 0
