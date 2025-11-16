@@ -245,3 +245,97 @@ Ansible printed:
 
 Why:
 This confirmed the machine was successfully configured: Nginx installed, enabled, and serving my custom HTML page.
+
+## 12. Creating IAM resources for GitHub Actions (OIDC authentication)
+
+To allow GitHub Actions to deploy infrastructure into my AWS account without storing long-lived AWS keys, I set up OpenID Connect (OIDC) authentication.
+
+Inside infra/terraform/iam/ I created three Terraform files:
+
+```
+oidc.tf → defines the GitHub OIDC provider
+github-actions-policy.tf → permissions that GitHub will have
+github-actions-role.tf → IAM role GitHub will assume
+github-actions-role-attach.tf → attaches the policy to the role
+```
+Why:
+This configuration lets GitHub request a short-lived AWS token and assume a role securely.
+No AWS secret keys are stored in GitHub — this is the modern, recommended method.
+
+I applied these changes with:
+
+`terraform apply`
+
+
+Terraform created:
+
+- the OIDC provider  
+- the GitHub Actions role  
+- the custom IAM policy  
+- the policy–role attachment  
+
+I verified everything exists with:
+
+`terraform state list | grep github`
+
+## 13. Creating an SSH key for GitHub (to enable git push over SSH)
+
+GitHub rejected HTTPS pushes without a Personal Access Token, so I switched the repo to SSH.
+
+I generated a new SSH key:
+
+`ssh-keygen -t ed25519 -f ~/.ssh/aurora_github`
+
+
+Then I printed it:
+
+`cat ~/.ssh/aurora_github.pub`
+
+
+I copied the output and added it to GitHub:
+Settings → SSH and GPG keys → New SSH Key
+
+After adding it, I confirmed successful authentication:
+
+`ssh -T git@github.com`
+
+## 14. Switching the repository remote to SSH
+
+I updated my local repo to use SSH instead of HTTPS:
+
+`git remote set-url origin git@github.com:DavidAidlin/aurora-devops-platform.git`
+
+
+I confirmed:
+
+`git remote -v`
+
+
+Then I pushed normally:
+
+`git push`
+
+
+This time the push succeeded using SSH.
+
+## 15. Adding the first GitHub Actions workflow (deploy.yaml)
+
+I created the folder:
+
+`mkdir -p .github/workflows`
+
+
+Inside it, I added deploy.yaml - a full CI/CD workflow that:
+
+checks out the repo
+
+configures AWS via OIDC
+
+installs Terraform
+
+runs terraform init, plan, apply
+
+shows Terraform outputs
+
+Why:
+This is the central automation that will create, configure, and manage my cloud environment on every push.
