@@ -1,0 +1,50 @@
+name: Deploy Aurora DevOps Environment
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write      # Required for OIDC authentication
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configure AWS credentials via OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::073107275281:role/aurora-github-actions-role
+          aws-region: eu-central-1
+
+      # 3. Setup Terraform
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 4. Initialize Terraform
+      - name: Terraform Init
+        working-directory: infra/terraform
+        run: terraform init
+
+      # 5. Terraform Plan
+      - name: Terraform Plan
+        working-directory: infra/terraform
+        run: terraform plan -out=plan.tfplan -var "instance_key_name=aurora-key"
+
+      # 6. Terraform Apply
+      - name: Terraform Apply
+        working-directory: infra/terraform
+        run: terraform apply -auto-approve plan.tfplan
+
+      # 7. Display Outputs
+      - name: Show Terraform Outputs
+        working-directory: infra/terraform
+        run: terraform output
